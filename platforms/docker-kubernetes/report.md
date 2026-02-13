@@ -14,4 +14,4 @@
 
 ## Kubernetes
 
-<!-- TODO: Document your process for deloying Outline on Kubernetes -->
+<!-- TODO: Document your process for deploying Navidrome on Kubernetes -->

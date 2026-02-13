@@ -19,14 +19,21 @@ You may add to or modify the existing files other than the `src/` directory, but
 
 ## Kubernetes
 
+> [!IMPORTANT]
+> **Update (13/02/2026):** We have replaced the Outline task with Navidrome, as Outline proved more complex to set up than intended.
+>
+> If you have already started the Outline task, you may continue with it or switch to Navidrome.
+> If you choose to switch, please include your progress on the Outline task in your submission, as we will take it into account during grading.
+> We apologise for any inconvenience.
+
 Kubernetes is an orchestration tool that manages the networking, deployment and health of applications.
 It is the backbone of DevSoc's infrastructure, ensuring our projects run reliably.
-For this task, we would like you to deploy a popular open-source project: [Outline](https://www.getoutline.com/).
+For this task, we would like you to deploy a popular open-source project: [Navidrome](https://www.navidrome.org/).
 
 The most straightforward approach is to use [minikube](https://minikube.sigs.k8s.io).
 By referring to the handbook and familiarising yourself with Kubernetes resources, you will be able to complete this task.
-We recommend starting by translating the provided [Docker Compose](https://docs.getoutline.com/s/hosting/doc/docker-7pfeLP5a8t#h-docker-compose) file into manifests and applying them locally.
-Please place your Kubernetes configuration files in the [`outline/`](./outline) directory and refer to them in your report.
+We recommend starting by translating the provided [Docker Compose](https://www.navidrome.org/docs/installation/docker/) file into manifests and applying them locally.
+Please place your Kubernetes configuration files in the [`navidrome/`](./navidrome) directory and refer to them in your report.
 
 Please document your process in [`report.md`](./report.md).
 Specifically, we are interested in:
@@ -34,7 +41,7 @@ Specifically, we are interested in:
 * Any challenges you encountered (e.g., networking, storage) and how you overcame them.
 * Any interesting features or configurations you experimented with.
 
-Success is defined as being able to access the Outline instance via `localhost` on your machine.
+Success is defined as being able to access the Navidrome instance via `localhost` on your machine.
 You are not required to configure persistence or public routing; however, implementing these features will provide excellent talking points for the interview!
 
 > [!CAUTION]
