@@ -34,7 +34,7 @@ trap 'kill_server' EXIT ERR
 
 echo "== Starting server =="
 python3 -m venv venv > /dev/null 2>&1
-source venv/bin/activate > /dev/null 2>&1
+source venv/Scripts/activate > /dev/null 2>&1
 pip install -r requirements.txt > /dev/null 2>&1
 
 # Start server in background
