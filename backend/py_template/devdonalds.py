@@ -28,7 +28,7 @@ class Ingredient(CookbookEntry):
 app = Flask(__name__)
 
 # Store your recipes here!
-cookbook = None
+cookbook = []
 
 # Task 1 helper (don't touch)
 @app.route("/parse", methods=['POST'])
@@ -43,35 +43,64 @@ def parse():
 # [TASK 1] ====================================================================
 # Takes in a recipeName and returns it in a form that 
 def parse_handwriting(recipeName: str) -> Union[str | None]:
-	newName = "";
+	# First condition. '-' and '_' become ' '
+	recipeName = recipeName.replace('-', ' ').replace('_', ' ')
 
+	newName = ""
+
+	# Loop for valid characters
 	for char in recipeName:
-		# First condition: Replace '-' and '_' with ' '
-		if char == '-' or char == '_':
-			newName += ' ';
-			continue;
-		
+			if char.isalpha() or char.isspace():
+				newName += char
 
-		isLetter = (char.toLowerCase() >= 'a' and char.toLowerCase() <= 'z');
-		isSpace = (char == ' ');
-		# If char is a letter or number, append to newName
-		if (isLetter or isSpace): newName += char;
-	
-	
-	# Use change-case library to format the name to capital case
-	# Using .toLowerCase() to prevent camelCase boundary
-	newName = newName.strip().capitalize()
+	# Put words into an array
+	words = newName.split()
 
-	# Return null if the newName is empty, otherwise return the formatted name
-	return None if newName.length() == 0 else newName;
+	# Remove whitespace and capitalize
+	words = [word.strip().capitalize() for word in words]
+
+	# Join them back together with a single space
+	newName = " ".join(words)
+
+	# 4. Return None if empty, else the name
+	return newName if len(newName) > 0 else None
 
 
 # [TASK 2] ====================================================================
 # Endpoint that adds a CookbookEntry to your magical cookbook
 @app.route('/entry', methods=['POST'])
 def create_entry():
-	# TODO: implement me
-	return 'not implemented', 500
+	data = request.get_json()
+
+	# Type must be either 'recipe' or 'ingredient'
+	type = data.get('type', '')
+	if type != "recipe" and type != "ingredient":
+		return "", 400
+
+	# Each entry must have a unique name
+	name = data.get('name', '')
+	nameExists = any(entry.get('name') == name for entry in cookbook)
+	if nameExists:
+		return "", 400
+
+	if type == "ingredient":
+		# cookTime must be a number and >= 0
+		cookTime = data.get('cookTime', '')
+		if not isinstance(cookTime, int) or cookTime < 0:
+			return "", 400
+
+	if type == "recipe":
+		# Check for duplicate names in requiredItems
+		seenNames = []
+		
+		# Loop to check names
+		for item in data.get('requiredItems', []):
+			if item.get('name') in seenNames:
+				return "", 400
+			seenNames.append(item["name"]);
+
+	cookbook.append(data);
+	return "", 200
 
 
 # [TASK 3] ====================================================================
