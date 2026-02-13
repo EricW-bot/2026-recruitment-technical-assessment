@@ -97,19 +97,87 @@ def create_entry():
 		for item in data.get('requiredItems', []):
 			if item.get('name') in seenNames:
 				return "", 400
-			seenNames.append(item["name"]);
+			seenNames.append(item["name"])
 
-	cookbook.append(data);
+	cookbook.append(data)
 	return "", 200
 
+# Recursive helper function to get sub-recipes and sub-ingredients
+def getInfo(name, quantity):
+	item = next((entry for entry in cookbook if entry.get('name') == name), None)
+	if not item:
+		return None	
+
+	# Ingredient
+	if item["type"] == "ingredient":
+		ingredients = {}
+		ingredients[name] = quantity
+		itemCookTime = item["cookTime"] * quantity
+		return { 
+			"ingredients": ingredients,
+			"cookTime": itemCookTime
+		}
+
+	# If recipe, then recurse
+	if item["type"] == "recipe":
+		# Store all ingredients in an object with keys as strings and values as numbers
+		totalIngredients = {}
+		totalCookTime = 0
+
+		for required in item["requiredItems"]:
+			subResult = getInfo(required["name"], required["quantity"] * quantity)
+			
+			# If any sub-item is missing, return None
+			if not subResult:
+				return None
+
+			# Recursively add cook time
+			totalCookTime += subResult["cookTime"]
+
+			# Merge sub-ingredients into totalIngredients
+			for ingredientName, ingredientQuantity in subResult["ingredients"].items():
+				# If we already have this ingredient, add to it. Otherwise start at 0.
+				currentQty = totalIngredients.get(ingredientName, 0)
+				totalIngredients[ingredientName] = currentQty + ingredientQuantity
+
+		return { 
+			"ingredients": totalIngredients, 
+			"cookTime": totalCookTime
+		}
+  
+	return None
 
 # [TASK 3] ====================================================================
 # Endpoint that returns a summary of a recipe that corresponds to a query name
 @app.route('/summary', methods=['GET'])
 def summary():
-	# TODO: implement me
-	return 'not implemented', 500
+	recipeName = request.args.get('name')
 
+	rootItem = next((entry for entry in cookbook if entry.get('name') == recipeName), None)
+	if not rootItem or rootItem["type"] != "recipe":
+		return "", 400
+
+	# Use recursive helper function
+	result = getInfo(recipeName, 1)
+
+	if not result:
+		return "", 400
+
+	# { Egg: 3 } turns into { name: "Egg", quantity: 3 }
+	formattedIngredients = [
+		{
+		"name": name,
+		"quantity": quantity
+		} 
+		for name, quantity in result["ingredients"].items()
+	]
+
+	return jsonify({
+		"name": recipeName,
+		"cookTime": result["cookTime"],
+		"ingredients": formattedIngredients
+	}), 200
+	
 
 # =============================================================================
 # ==== DO NOT TOUCH ===========================================================
