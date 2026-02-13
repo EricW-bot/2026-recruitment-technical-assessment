@@ -9,13 +9,10 @@ function cleanup {
 
 # Creates and activates a virtual env
 python3 -m venv venv
-source venv/bin/activate
+source venv/Scripts/activate
 
 # Install dependencies and runs
 pip install -r requirements.txt
 python devdonalds.py
 
 trap cleanup EXIT
-
-
-

@@ -43,8 +43,27 @@ def parse():
 # [TASK 1] ====================================================================
 # Takes in a recipeName and returns it in a form that 
 def parse_handwriting(recipeName: str) -> Union[str | None]:
-	# TODO: implement me
-	return recipeName
+	newName = "";
+
+	for char in recipeName:
+		# First condition: Replace '-' and '_' with ' '
+		if char == '-' or char == '_':
+			newName += ' ';
+			continue;
+		
+
+		isLetter = (char.toLowerCase() >= 'a' and char.toLowerCase() <= 'z');
+		isSpace = (char == ' ');
+		# If char is a letter or number, append to newName
+		if (isLetter or isSpace): newName += char;
+	
+	
+	# Use change-case library to format the name to capital case
+	# Using .toLowerCase() to prevent camelCase boundary
+	newName = newName.strip().capitalize()
+
+	# Return null if the newName is empty, otherwise return the formatted name
+	return None if newName.length() == 0 else newName;
 
 
 # [TASK 2] ====================================================================
