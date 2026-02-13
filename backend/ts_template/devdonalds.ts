@@ -114,7 +114,7 @@ app.post("/entry", (req: Request, res: Response) => {
 });
 
 // Recursive helper function to get sub-recipes and sub-ingredients
-const getSummary = (name: string, quantity: number, cookbook: any[]): SummaryResult | null => {
+const getInfo = (name: string, quantity: number): SummaryResult | null => {
   const item = cookbook.find(e => e.name === name);
   if (!item) return null;
 
@@ -135,7 +135,7 @@ const getSummary = (name: string, quantity: number, cookbook: any[]): SummaryRes
     let totalCookTime = 0;
 
     for (const required of item.requiredItems) {
-      const subResult = getSummary(required.name, required.quantity * quantity, cookbook);
+      const subResult = getInfo(required.name, required.quantity * quantity);
       
       // If any sub-item is missing, return null
       if (!subResult) return null;
@@ -169,7 +169,7 @@ app.get("/summary", (req: Request, res: Response) => {
   }
 
   // 2. Call the helper function
-  const result = getSummary(recipeName, 1, cookbook);
+  const result = getInfo(recipeName, 1);
 
   if (!result) {
     return res.status(400).send();
