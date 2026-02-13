@@ -162,13 +162,12 @@ const getInfo = (name: string, quantity: number): SummaryResult | null => {
 app.get("/summary", (req: Request, res: Response) => {
   const recipeName = req.query.name as string;
 
-  // 1. Find the root item
   const rootItem = cookbook.find(existingNames => existingNames.name === recipeName);
   if (!rootItem || rootItem.type !== "recipe") {
     return res.status(400).send();
   }
 
-  // 2. Call the helper function
+  // Use recursive helper function
   const result = getInfo(recipeName, 1);
 
   if (!result) {
