@@ -4,6 +4,7 @@
     "start": "ts-node devdonalds.ts"
   },
   "dependencies": {
+    "change-case": "^5.4.4",
     "express": "^4.21.2"
   },
   "devDependencies": {
